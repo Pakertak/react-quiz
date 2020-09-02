@@ -3,9 +3,20 @@ import classes from './AnswerItem.module.css'
 
 
 const AnswerItem = props => {
+
+	const itemClasses = [classes.AnswerItem]
+
+	if(props.state) {
+		itemClasses.push(classes[props.state])
+	}
+
 	return (
-		<li className={classes.AnswerItem}>
+		<li 
+			className={itemClasses.join(' ')}
+			onClick = {() => props.onAnswerClick(props.answer.id)}
+		>
 			{ props.answer.text }
+			
 		</li>
 	)
 }

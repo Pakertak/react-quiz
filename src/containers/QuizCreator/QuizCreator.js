@@ -4,9 +4,9 @@ export default class QuizCreator extends Component {
 	state = {  }
 	render() { 
 		return (
-			<div>
-				<h1>QuizCreator</h1>
-			</div>
+			<form>
+				
+			</form>
 		)
 	}
 }

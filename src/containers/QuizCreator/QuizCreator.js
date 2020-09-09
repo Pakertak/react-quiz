@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import classes from './QuizCreator.module.css'
 import Button from './../../components/UI/Button/Button'
-import {createControl} from './../../form/FormFramework'
+import { createControl, validate } from './../../form/FormFramework'
 import Input from './../../components/UI/Input/Input'
 import Auxillary from './../../hoc/Auxiliary/Auxiliary'
+import Select from './../../components/UI/Select/Select'
 
 function createFormControls() {
 	return {
@@ -24,7 +25,7 @@ function createFormControls() {
 export default class QuizCreator extends Component {
 	state = { 
 		quiz: [],
-		classes: [],
+		rightAnswerId: 1,
 		formControls: createFormControls()
 	}
 
@@ -39,7 +40,7 @@ export default class QuizCreator extends Component {
 				shouldValidate={!!control.validate}
 				touched={control.touched}
 				errorMessage={control.errorMessage}
-				onChange={event => this.changeHandler(event.target.value, controlName)}
+				onChange={event => this.onChangeHandler(event.target.value, controlName, index)}
 			/>
 		)
 	}
@@ -64,8 +65,34 @@ export default class QuizCreator extends Component {
 	}
 
 
-	onChangeHandler = (value, control) => {
+	onChangeHandler = (value, controlName, index = 0) => {
+		const formControls = {
+			...this.state.formControls
+		}
+		let control = {}
+		if(controlName === 'question') {
+			control = {
+				...formControls[controlName]
+			}
+		} else {
+			control = {
+				...formControls[controlName][index]
+			}
+		}
+		
 
+		control.touched = true
+		control.value = value
+		control.valid = validate(control.value, control.validation)
+		if(controlName === 'question') {
+			formControls[controlName] = control
+		}	else {
+			formControls[controlName][index] = control
+		}
+
+		this.setState({
+			formControls
+		})
 	}
 
 	plusClickHandler = () => {
@@ -85,7 +112,6 @@ export default class QuizCreator extends Component {
 
 	minusClickHandler = () => {
 		const count = this.state.formControls.options.length
-		console.log(count);
 		if(count < 3) return null
 		const formControls = {...this.state.formControls}
 
@@ -94,6 +120,11 @@ export default class QuizCreator extends Component {
 		this.setState({
 			formControls
 		})
+	}
+	selectChangeHandler = event => {
+		this.setState({
+			rightAnswerId: +event.target.value
+		});
 	}
 
 	submitHandler = (event) => {
@@ -109,31 +140,45 @@ export default class QuizCreator extends Component {
 	}
 
 	render() {
+
+		const options = []
+		for(let i = 0; i < this.state.formControls.options.length; i++)
+			options.push({text: i + 1, value: i + 1})
+		
+		const select = <Select 
+			label="Change right answer"
+			value={this.state.rightAnswerId}
+			onChange={this.selectChangeHandler}
+			options={options}
+		/> 
+
 		const plus = ['fa', 'fa-plus', classes.icons, classes.success]
 		const minus = ['fa', 'fa-minus', classes.icons, classes.error]
-		const cls =this.state.classes.join(' ')
+		
 		return (
 			<div className={classes.QuizCreator}>
 				<div>
 					<h1>Create quiz</h1>
 
-					<form onSubmit={this.submitHandler} className={cls}>
+					<form onSubmit={this.submitHandler}>
 
 						{ this.renderControls() }	
 
-						<select></select>
+						{ select }
 						<hr />
-						
+
 						<Button
 							type={'primary'}
 							onClick={this.addQuestionHandler}
 						>Add question</Button>
+
+						<span className={plus.join(' ')} onClick={this.plusClickHandler}></span>
+						<span className={minus.join(' ')} onClick={this.minusClickHandler}></span>
+						
 						<Button
 							type={'success'}
 							onClick={this.createQuizHandler}
 						>Create quiz</Button>
-						<span className={plus.join(' ')} onClick={this.plusClickHandler}></span>
-						<span className={minus.join(' ')} onClick={this.minusClickHandler}></span>
 					</form>
 				</div>
 			</div>

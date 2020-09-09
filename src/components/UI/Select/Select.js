@@ -5,11 +5,22 @@ const Select = props => {
 
 	const htmlFor = `${props.label}-${Math.random()}|`
 	return (
-		<div>
+		<div className={classses.Select}>
 			<label htmlFor={htmlFor}>{props.label}</label>
 			<select
 				id={htmlFor}
-			></select>
+				value={props.value}
+				onChange={props.onChange}
+			>
+				{ props.options.map((option, index) => {
+					return (
+						<option value={option.value} key={option.value + index}>{option.text}</option>
+					)
+				}) }
+			</select>
 		</div>
 	)
 }
+
+
+export default Select

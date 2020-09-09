@@ -1,8 +1,9 @@
 export function createControl(config, validation) {
 	return {
-		value:'',
 		...config,
+		value:'',
 		validation,
+		validate: true,
 		valid: !validation,
 		touched: false
 	}
@@ -20,4 +21,13 @@ export function validate(value, validation = null) {
 	}
 
 	return isValid
+}
+
+export function validateForm(formControls) {
+	let isFormValid = true
+	isFormValid = isFormValid && formControls.question.valid
+	formControls.options.forEach(option => {
+		isFormValid = isFormValid && option.valid 
+	}) 
+	return isFormValid
 }

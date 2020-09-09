@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classes from './QuizCreator.module.css'
 import Button from './../../components/UI/Button/Button'
-import { createControl, validate } from './../../form/FormFramework'
+import { createControl, validate, validateForm } from './../../form/FormFramework'
 import Input from './../../components/UI/Input/Input'
 import Auxillary from './../../hoc/Auxiliary/Auxiliary'
 import Select from './../../components/UI/Select/Select'
@@ -14,17 +14,29 @@ function createFormControls() {
 		}, {required: true}),
 		options: [createControl({
 			label: `Option №1`,
+			id: 0,
 			errorMessage: 'Option can not be empty'
 		}, {required: true}),createControl({
 			label: `Option №2`,
+			id: 1,
 			errorMessage: 'Option can not be empty'
 		}, {required: true})]
 	}
 }
 
+function controlsProcess(control, value) {
+	
+	control.touched = true
+	control.value = value
+	control.valid = validate(control.value, control.validation)
+
+	return control
+}
+
 export default class QuizCreator extends Component {
 	state = { 
 		quiz: [],
+		isFormValid: false,
 		rightAnswerId: 1,
 		formControls: createFormControls()
 	}
@@ -69,29 +81,16 @@ export default class QuizCreator extends Component {
 		const formControls = {
 			...this.state.formControls
 		}
-		let control = {}
-		if(controlName === 'question') {
-			control = {
-				...formControls[controlName]
-			}
-		} else {
-			control = {
-				...formControls[controlName][index]
-			}
-		}
 		
-
-		control.touched = true
-		control.value = value
-		control.valid = validate(control.value, control.validation)
 		if(controlName === 'question') {
-			formControls[controlName] = control
+			formControls[controlName] = controlsProcess({...formControls[controlName]}, value)
 		}	else {
-			formControls[controlName][index] = control
+			formControls[controlName][index] = controlsProcess({...formControls[controlName][index]}, value)
 		}
 
 		this.setState({
-			formControls
+			formControls,
+			isFormValid: validateForm(formControls)
 		})
 	}
 
@@ -101,6 +100,7 @@ export default class QuizCreator extends Component {
 		const formControls = {...this.state.formControls}
 		formControls.options.push(createControl({
 			label: `Option №${count + 1}`,
+			id: count,
 			errorMessage: 'Option can not be empty',
 		}, {required: true}))
 
@@ -132,11 +132,30 @@ export default class QuizCreator extends Component {
 	}
 
 	addQuestionHandler = () => {
-
+		const quiz = this.state.quiz.concat()
+		const index = quiz.length + 1
+		const answers = []
+		this.state.formControls.options.forEach(option => {
+			answers.push({text: option.value, id: option.id})
+		})
+		const questionItem = {
+			question: this.state.formControls.question.value,
+			id: index,
+			rightAnswerId: this.state.rightAnswerId,
+			answers
+		}
+		quiz.push(questionItem)
+		this.setState({
+			quiz,
+			isFormValid: false,
+			rightAnswerId: 1,
+			formControls: createFormControls()
+		})	
+		console.log(questionItem);
 	}
 
 	createQuizHandler = () => {
-
+		
 	}
 
 	render() {
@@ -170,6 +189,7 @@ export default class QuizCreator extends Component {
 						<Button
 							type={'primary'}
 							onClick={this.addQuestionHandler}
+							disabled={!this.state.isFormValid}
 						>Add question</Button>
 
 						<span className={plus.join(' ')} onClick={this.plusClickHandler}></span>
@@ -178,6 +198,7 @@ export default class QuizCreator extends Component {
 						<Button
 							type={'success'}
 							onClick={this.createQuizHandler}
+							disabled={this.state.quiz.length === 0}
 						>Create quiz</Button>
 					</form>
 				</div>

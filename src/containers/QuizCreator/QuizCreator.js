@@ -176,14 +176,6 @@ export default class QuizCreator extends Component {
 		} catch (e) {
 			console.log(e)
 		}
-
-		// axios.post('https://react-quiz-3562b.firebaseio.com/quizes.json', this.state.quiz)
-		// 	.then(response => {
-		// 		console.log(response);
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 	})
 	}
 
 	render() {

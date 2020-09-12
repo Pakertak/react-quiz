@@ -3,7 +3,7 @@ import classes from './Quiz.module.css'
 import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz'
 import quiz from './QuizList/QuizList'
-
+import axios from '../../axios/axios-quiz'
 
 
 export default class Quiz extends Component {
@@ -20,8 +20,8 @@ export default class Quiz extends Component {
 		}
 	}
 
-	componentDidMount() {
-		console.log('Quiz id = ', this.props.match.params.id);
+	async componentDidMount() {
+		const response = await axios.get('/quizes.json')
 	}
 
 	onAnswerClickHandler(answerID) {

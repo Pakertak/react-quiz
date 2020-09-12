@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import is from 'is_js'
 import classes from './Auth.module.css'
-import Button from './../../components/UI/Button/Button';
-import Input from './../../components/UI/Input/Input';
+import Button from './../../components/UI/Button/Button'
+import Input from './../../components/UI/Input/Input'
+import axios from 'axios'
+
+const API_KEY = 'AIzaSyCQnY-Co0duUO6SRT6zI4LpYMy8xuwrYWY'
 
 export default class Auth extends Component {
 
@@ -81,12 +84,36 @@ export default class Auth extends Component {
 		return isValid
 	}
 
-	loginHandler() {
-
+	async loginHandler() {
+		const authData = {
+			email: this.state.formControls.email.value,
+			password: this.state.formControls.password.value,
+			returnSecureToken: true
+		}
+		try {
+			await axios.post(
+				`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, authData
+			)			
+		} catch(e) {
+			console.log(e)
+		}
 	}
 
-	registerHandler() {
+	async registerHandler() {
+		const authData = {
+			email: this.state.formControls.email.value,
+			password: this.state.formControls.password.value,
+			returnSecureToken: true
+		}
+		try {
 
+			await axios.post(
+				`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, authData
+			)
+			
+		} catch(e) {
+			console.log(e)
+		}
 	}
 
 	submitHandler(event) {

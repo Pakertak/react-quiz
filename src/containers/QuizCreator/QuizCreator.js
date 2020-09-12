@@ -106,7 +106,8 @@ export default class QuizCreator extends Component {
 		}, {required: true}))
 
 		this.setState({
-			formControls
+			formControls,
+			isFormValid: validateForm(formControls)
 		})
 	
 	}

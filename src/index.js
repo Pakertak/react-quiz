@@ -24,17 +24,18 @@ const store = createStore(
 )
 
 const app = (
-  <Provider store={store}>
-    <React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </React.StrictMode>
-  </Provider>
+    </Provider>
+  </React.StrictMode>
+  
 )
 
 ReactDOM.render(
-  ,
+  app,
   document.getElementById('root')
 )
 

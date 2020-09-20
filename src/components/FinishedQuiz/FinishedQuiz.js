@@ -1,7 +1,7 @@
 import React from 'react'
 import classes from './FinishedQuiz.module.css'
-import Button from './UI/Button/Button'
-
+import Button from '../UI/Button/Button'
+import { Link } from 'react-router-dom'
 
 const FinishedQuiz = props => {
 
@@ -54,12 +54,13 @@ const FinishedQuiz = props => {
 				>
 					Try again
 				</Button>
-				<Button 
-					type="success"
-				>
-					List of tests
-				</Button>
-
+				<Link to={'/'}>
+					<Button 
+						type="success"
+					>
+						Quiz list
+					</Button>
+				</Link>
 			</div>
 		</div>
 	)

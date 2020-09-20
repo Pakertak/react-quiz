@@ -31,7 +31,6 @@ const app = (
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
-  
 )
 
 ReactDOM.render(
